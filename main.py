@@ -4,7 +4,8 @@ import pygame
 from time import sleep
 pygame.init()
 
-size = width, height = (1600, 1600)
+scale = 2 # 1 for 1080p 2 for 2160p
+size = width, height = (800*scale, 800*scale)
 x_pos = 1
 y_pos = 1
 speed = 10
@@ -16,7 +17,7 @@ green = (0, 255, 0)
 screen = pygame.display.set_mode(size)
 
 dir_buffer = deque(['r'])
-seg_offset = 16 # size of snake segments
+seg_offset = 8*scale # size of snake segments
 snake_segs = [(10, 10)]
 snake_length = 1
 
