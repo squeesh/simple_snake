@@ -6,10 +6,6 @@ pygame.init()
 
 scale = 2 # 1 for 1080p 2 for 2160p
 size = width, height = (800*scale, 800*scale)
-x_pos = 1
-y_pos = 1
-speed = 10
-
 black = (0, 0, 0)
 blue = (0, 0, 255)
 green = (0, 255, 0)
@@ -20,6 +16,8 @@ dir_buffer = deque(['r'])
 seg_offset = 8*scale # size of snake segments
 snake_segs = [(10, 10)]
 snake_length = 1
+
+game_over = False
 
 dir_map = {
     pygame.K_LEFT: 'l',
@@ -52,6 +50,17 @@ def keyboard_event(key):
     # DEBUG
     if key == pygame.K_SPACE:
         increase_snake_length()
+
+
+def check_collision():
+    global game_over
+
+    collision = False
+    if snake_segs[0] in snake_segs[1:]:
+        collision = True
+
+    if collision:
+        game_over = True
 
 
 def move_snake():
@@ -95,9 +104,30 @@ while True:
             keyboard_event(event.key)
 
     move_snake()
+    check_collision()
 
     # Handle rendering bits
     screen.fill(black)
     render_game_area()
-    pygame.display.flip()
-    sleep(0.1)
+
+    if game_over:
+        font = pygame.font.Font(None, 36*scale)
+        text = font.render("Game Over - Press ESC for new game", 1, (255, 0, 0))
+        textpos = text.get_rect(centerx=width/2, centery=height/4)
+        screen.blit(text, textpos)
+        pygame.display.flip()
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    dir_buffer = deque(['r'])
+                    snake_segs = [(10, 10)]
+                    snake_length = 1
+                    game_over = False
+
+            if not game_over:
+                break
+            sleep(0.5)
+
+    else:
+        pygame.display.flip()
+        sleep(0.1)
