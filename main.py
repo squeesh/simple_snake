@@ -4,29 +4,31 @@ import pygame
 from time import sleep
 pygame.init()
 
-scale = 2 # 1 for 1080p 2 for 2160p
-size = width, height = (800*scale, 800*scale)
-black = (0, 0, 0)
-blue = (0, 0, 255)
-green = (0, 255, 0)
+SCALE = 2 # 1 for 1080p 2 for 2160p
+SIZE = WIDTH, HEIGHT = (800*SCALE, 800*SCALE)
 
-screen = pygame.display.set_mode(size)
+BLACK = (0, 0, 0)
+BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+
+screen = pygame.display.set_mode(SIZE)
 
 dir_buffer = deque(['r'])
-seg_offset = 8*scale # size of snake segments
+seg_offset = 8*SCALE # size of snake segments
 snake_segs = [(10, 10)]
 snake_length = 1
 
 game_over = False
 
-dir_map = {
+DIR_MAP = {
     pygame.K_LEFT: 'l',
     pygame.K_RIGHT: 'r',
     pygame.K_UP: 'u',
     pygame.K_DOWN: 'd',
 }
 
-opposite_map = {
+OPPOSITE_MAP = {
     'l': 'r',
     'r': 'l',
     'u': 'd',
@@ -43,9 +45,9 @@ def increase_snake_length():
 def keyboard_event(key):
     global snake_length
 
-    if key in dir_map:
-        if dir_buffer[-1] != dir_map[key] and opposite_map[dir_buffer[-1]] != dir_map[key]:
-            dir_buffer.append(dir_map[key])
+    if key in DIR_MAP:
+        if dir_buffer[-1] != DIR_MAP[key] and OPPOSITE_MAP[dir_buffer[-1]] != DIR_MAP[key]:
+            dir_buffer.append(DIR_MAP[key])
 
     # DEBUG
     if key == pygame.K_SPACE:
@@ -88,7 +90,7 @@ def move_snake():
 def render_snake():
     for i in range(0, snake_length):
         seg_x, seg_y = snake_segs[i]
-        pygame.draw.rect(screen, green, [seg_x*seg_offset, seg_y*seg_offset, seg_offset, seg_offset])
+        pygame.draw.rect(screen, GREEN, [seg_x*seg_offset, seg_y*seg_offset, seg_offset, seg_offset])
 
 
 def render_game_area():
@@ -107,13 +109,13 @@ while True:
     check_collision()
 
     # Handle rendering bits
-    screen.fill(black)
+    screen.fill(BLACK)
     render_game_area()
 
     if game_over:
-        font = pygame.font.Font(None, 36*scale)
-        text = font.render("Game Over - Press ESC for new game", 1, (255, 0, 0))
-        textpos = text.get_rect(centerx=width/2, centery=height/4)
+        font = pygame.font.Font(None, 36*SCALE)
+        text = font.render("Game Over - Press ESC for new game", 1, RED)
+        textpos = text.get_rect(centerx=WIDTH/2, centery=HEIGHT/4)
         screen.blit(text, textpos)
         pygame.display.flip()
         while True:
